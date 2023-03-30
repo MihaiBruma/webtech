@@ -1,71 +1,234 @@
-import {Card, Menu, Input, Button, Form, message } from 'antd'; 
-//import 'antd/dist/antd.css';
-import React from 'react';
-import ReactDOM from 'react-dom'; 
-import './App.css'; 
+import React, { useState } from "react";
+import "./App.css";
 
-const onFinish = (values) => { 
-    message.success(`Name: ${values.name} , Email: ${values.email} , Phone: ${values.phone}`); 
-  }; 
-
-const { SubMenu } = Menu;
-
-function handleClick(e) {
-  const itemId = e.key;
-  const newWindow = window.open('', '_blank');
-  ReactDOM.render(
-    <div style={{ padding: '30px' }}>
-      <Card title={`Card Title - ${itemId}`} bordered={false}>
-        <p>Here you can find more Info.</p>
-      </Card>
-    </div>,
-    newWindow.document.body
-  );
+interface BasicFormInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  age: number;
 }
 
-function App() {
+interface BasicFormProps {
+  onSubmit: (data: BasicFormInput) => void;
+}
+
+interface BasicFormState extends BasicFormInput {
+  success: boolean;
+}
+
+class BasicForm extends React.Component<BasicFormProps, BasicFormState> {
+  state: BasicFormState = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    age: 0,
+    success: false,
+  };
+
+  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const { firstName, lastName, email, password, age } = this.state;
+    this.props.onSubmit({ firstName, lastName, email, password, age });
+    this.setState({ success: true });
+  };
+
+  render() {
+    const { firstName, lastName, email, password, age, success } = this.state;
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          First Name
+          <input
+            type="text"
+            name="firstName"
+            value={firstName}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Last Name
+          <input
+            type="text"
+            name="lastName"
+            value={lastName}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Email
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Age
+          <input
+            type="number"
+            name="age"
+            value={age}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <button type="submit">Submit</button>
+        {success && <p>Data loaded successfully!</p>}
+      </form>
+    );
+  }
+}
+
+interface ExtendedFormInput extends BasicFormInput {
+  address: string;
+  phone: string;
+}
+
+interface ExtendedFormProps extends BasicFormProps {}
+
+interface ExtendedFormState extends BasicFormState, ExtendedFormInput {}
+
+class ExtendedForm extends BasicForm {
+  state: ExtendedFormState = {
+    ...super.state,
+    address: "",
+    phone: "",
+  };
+
+  handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = event.target;
+    this.setState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const { firstName, lastName, email, password, age, address, phone } = this.state;
+    this.props.onSubmit({ firstName, lastName, email, password, age, address, phone });
+    this.setState({ success: true });
+  };
+   render() {
+    const { firstName, lastName, email, password, age, address, phone, success } = this.state;
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          First Name 
+          <input
+            type="text"
+            name="firstName"
+            value={firstName}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Last Name
+          <input
+            type="text"
+            name="lastName"
+            value={lastName}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Email 
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Password 
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Age 
+          <input
+            type="number"
+            name="age"
+            value={age}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Address 
+          <input
+            type="text"
+            name="address"
+            value={address}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <label>
+          Phone 
+          <input
+            type="text"
+            name="phone"
+            value={phone}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br />
+        <button type="submit">Submit</button>
+        {success && <p>Data loaded successfully!</p>}
+      </form>
+    );
+  }
+}
+
+const App = () => {
+  const handleSubmit = (data: FormInput) => {
+    console.log(data);
+  };
+
   return (
-     <div>
-      <Card title="User Information IN."> 
-        <Form onFinish={onFinish}> 
-          <Form.Item 
-            label="Name" 
-            name="name" 
-            rules={[{ required: true, message: '(!) Warning. NO NAME / PRONAME INTRODUCED! -> Required.' }]} 
-          > 
-            <Input /> 
-          </Form.Item> 
-          <Form.Item 
-            label="Email" 
-            name="email" 
-            rules={[{ required: true, message: '(!) Warning. NO EMAIL INTRODUCED! -> Required.' }]} 
-          > 
-            <Input /> 
-          </Form.Item> 
-          <Form.Item 
-            label="Phone" 
-            name="phone" 
-            rules={[{ required: true, message: '(!) Warning. NO PHONE NUMBER INTRODUCED! -> Required.' }]} 
-          > 
-            <Input /> 
-          </Form.Item> 
-          <Form.Item> 
-            <Button type="primary" htmlType="submit"> 
-              Submit 
-            </Button> 
-          </Form.Item> 
-        </Form> 
-      </Card> 
-        <div>
-      <Menu onClick={handleClick} mode="horizontal">
-        <SubMenu key="sub1" title="Menu">
-          <Menu.Item key="1">Name Info</Menu.Item>
-          <Menu.Item key="2">Email Info</Menu.Item>
-          <Menu.Item key="3">Phone Info</Menu.Item>
-        </SubMenu>
-      </Menu>
-      </div>
-      </div>
+    <div className="App">
+      <p>Basic Interface </p>
+      <BasicForm onSubmit={handleSubmit} />
+      <p> Extended Interface </p>
+      <ExtendedForm onSubmit={handleSubmit} />
+    </div>
   );
-}
+};
+
 export default App;
