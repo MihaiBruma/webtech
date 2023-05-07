@@ -1,0 +1,12 @@
+body {
+  background-size: 1000%, 800%;
+  background-image: url("./images/images.jpg"); 
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
